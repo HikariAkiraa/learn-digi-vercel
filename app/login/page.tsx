@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { CircuitBoard, ShieldCheck } from 'lucide-react';
 import { auth, signIn } from '@/auth';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Masuk Admin',
   robots: { index: false, follow: false },
