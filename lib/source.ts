@@ -21,16 +21,26 @@ const publicSource = update(docs.toFumadocsSource())
     files.filter((file) => {
       // meta.json files describe ordering; always keep them.
       if (file.type === 'meta') return true;
-      if (showDrafts) return true;
 
+      // Public source strictly excludes draft documents
       return file.data.draft !== true;
     }),
   )
   .build();
 
+import { createElement } from 'react';
+import * as LucideIcons from 'lucide-react';
+
 export const source = loader({
   baseUrl: '/docs',
   source: publicSource,
+  icon(icon) {
+    if (!icon) return;
+    const IconComponent = (LucideIcons as Record<string, any>)[icon];
+    if (IconComponent) {
+      return createElement(IconComponent);
+    }
+  },
 });
 
 /**
@@ -43,6 +53,13 @@ export const source = loader({
 export const draftSource = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
+  icon(icon) {
+    if (!icon) return;
+    const IconComponent = (LucideIcons as Record<string, any>)[icon];
+    if (IconComponent) {
+      return createElement(IconComponent);
+    }
+  },
 });
 
 export type DocsPage = ReturnType<typeof source.getPage>;

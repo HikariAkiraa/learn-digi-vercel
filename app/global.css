@@ -48,55 +48,23 @@
    comfortable for the long reading sessions a practicum module implies.
 --------------------------------------------------------------------------- */
 
-@theme {
-  --color-fd-background: #faf8f3;
-  --color-fd-foreground: #0b2942;
-
-  /* Surfaces */
-  --color-fd-card: #ffffff;
-  --color-fd-card-foreground: #0b2942;
-  --color-fd-popover: #ffffff;
-  --color-fd-popover-foreground: #0b2942;
-  --color-fd-muted: #f1ede4;
-  --color-fd-secondary: #f1ede4;
-  --color-fd-secondary-foreground: #0b2942;
-
-  /* Secondary text, sidebar labels, captions. 5.3:1 on the cream canvas. */
-  --color-fd-muted-foreground: #5a6b6a;
-
-  /* Links, active sidebar item, primary buttons. 5.6:1 on cream. */
-  --color-fd-primary: #0369a1;
-  --color-fd-primary-foreground: #faf8f3;
-
-  /* Hover / selected surfaces — a warm sand rather than a grey. */
-  --color-fd-accent: #ebe4d4;
-  --color-fd-accent-foreground: #0b2942;
-
-  --color-fd-border: #e3dccd;
-  --color-fd-ring: #0369a1;
-  --color-fd-overlay: hsla(212, 60%, 8%, 0.28);
-}
-
 /* ---------------------------------------------------------------------------
-   3. DARK MODE
-
-   Exactly the palette from the brief, with one deliberate substitution — see
-   the contrast note in section 4.
+   2. FORCED DARK MODE PALETTE
 --------------------------------------------------------------------------- */
 
-.dark {
-  --color-fd-background: #141519;
+@theme {
+  --color-fd-background: #0e1015;
   --color-fd-foreground: #ede8df;
 
-  --color-fd-card: #191b21;
+  /* Surfaces */
+  --color-fd-card: #151820;
   --color-fd-card-foreground: #ede8df;
-  --color-fd-popover: #191b21;
+  --color-fd-popover: #151820;
   --color-fd-popover-foreground: #ede8df;
-  --color-fd-muted: #1c1e24;
-  --color-fd-secondary: #1e2129;
+  --color-fd-muted: #1a1d26;
+  --color-fd-secondary: #1d202a;
   --color-fd-secondary-foreground: #f3d49c;
 
-  /* The muted teal/grey from the brief. 7.2:1 on #141519 — passes AAA. */
   --color-fd-muted-foreground: #8ba8a6;
 
   /* Bright cyan carries links and active states. */
@@ -110,6 +78,46 @@
   --color-fd-border: #2a2d36;
   --color-fd-ring: #0369a1;
   --color-fd-overlay: hsla(228, 12%, 3%, 0.6);
+}
+
+:root,
+.dark {
+  --color-fd-background: #0e1015;
+  --color-fd-foreground: #ede8df;
+
+  --color-fd-card: #151820;
+  --color-fd-card-foreground: #ede8df;
+  --color-fd-popover: #151820;
+  --color-fd-popover-foreground: #ede8df;
+  --color-fd-muted: #1a1d26;
+  --color-fd-secondary: #1d202a;
+  --color-fd-secondary-foreground: #f3d49c;
+
+  --color-fd-muted-foreground: #8ba8a6;
+
+  --color-fd-primary: #03eaff;
+  --color-fd-primary-foreground: #05131a;
+
+  --color-fd-accent: #1b2a33;
+  --color-fd-accent-foreground: #03eaff;
+
+  --color-fd-border: #2a2d36;
+  --color-fd-ring: #0369a1;
+  --color-fd-overlay: hsla(228, 12%, 3%, 0.6);
+}
+
+/* Programmatic dark mottled texture + ultra-subtle fine grain noise background */
+body,
+.dark body {
+  background-color: #0b0c10;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.022 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(at 15% 15%, rgba(28, 33, 44, 0.25) 0px, transparent 55%),
+    radial-gradient(at 85% 30%, rgba(22, 26, 35, 0.25) 0px, transparent 60%),
+    radial-gradient(at 35% 75%, rgba(25, 30, 40, 0.2) 0px, transparent 65%),
+    radial-gradient(at 80% 85%, rgba(18, 21, 28, 0.3) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #ede8df;
 }
 
 /* ---------------------------------------------------------------------------
@@ -130,9 +138,22 @@
    palette than the accessible one.
 --------------------------------------------------------------------------- */
 
-/* Headings pick up the beige in dark mode, deep navy in light mode. */
-.dark .prose :is(h1, h2, h3, h4),
-.dark #nd-page :is(h1, h2, h3, h4) {
+/* All MD/MDX documentation headings & body copy use the elegant display serif font */
+.prose,
+#nd-page,
+.prose :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, span),
+#nd-page :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, span) {
+  font-family: var(--font-display), ui-serif, Georgia, 'Times New Roman', serif;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6),
+#nd-page :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dark .prose :is(h1, h2, h3, h4, h5, h6),
+.dark #nd-page :is(h1, h2, h3, h4, h5, h6) {
   color: #f3d49c;
 }
 
@@ -164,17 +185,26 @@
   --color-fd-muted-foreground: #8ba8a6;
 }
 
+/* Ensure sticky sidebar search bar has solid background */
+#nd-sidebar > div:first-child,
+#nd-sidebar header,
+#nd-sidebar [role="search"] {
+  background-color: var(--color-fd-background) !important;
+  z-index: 30 !important;
+}
+
 /* ---------------------------------------------------------------------------
    6. "CLASSIC ELEGANT YET TECHNICAL" DETAILS
 --------------------------------------------------------------------------- */
 
 :root {
   --shadow-elegant: 0 1px 2px hsla(212, 60%, 12%, 0.06), 0 8px 24px -12px hsla(212, 60%, 12%, 0.14);
-  --grid-line: color-mix(in oklab, var(--color-fd-border) 70%, transparent);
+  --grid-line: rgba(255, 255, 255, 0.085);
 }
 
 .dark {
   --shadow-elegant: 0 1px 2px hsla(0, 0%, 0%, 0.4), 0 8px 28px -14px hsla(0, 0%, 0%, 0.7);
+  --grid-line: rgba(255, 255, 255, 0.085);
 }
 
 html {
@@ -187,22 +217,21 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Faint engineering-paper grid. Used by the hero and section backdrops via
-   `.tech-grid` — deliberately low contrast so it reads as texture, not noise. */
+/* Engineering-paper grid backdrop — crisp white lines */
 .tech-grid {
   background-image:
     linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 75% at 50% 10%, #000 55%, transparent 100%);
 }
 
-/* Thin gold hairline used to separate major landing-page sections. */
+/* Thin cyan primary hairline used to separate major landing-page sections. */
 .rule-gold {
   background: linear-gradient(
     to right,
     transparent,
-    color-mix(in oklab, var(--color-brand-gold) 55%, transparent),
+    color-mix(in oklab, var(--color-fd-primary) 65%, transparent),
     transparent
   );
   height: 1px;
@@ -225,3 +254,118 @@ body {
   outline: 2px solid var(--color-fd-ring);
   outline-offset: 2px;
 }
+
+/* ---------------------------------------------------------------------------
+   7. CUSTOM SIDEBAR & SEARCH STYLING (PRIMARY CYAN ACCENT MATCH)
+--------------------------------------------------------------------------- */
+
+/* Hide Sign In / Sign Out button from left sidebar — only show in navbar */
+#nd-sidebar .admin-nav-btn {
+  display: none !important;
+}
+
+/* Color for Courses & Resources top navigation links - matching cyan primary */
+#nd-sidebar a[href="/courses"],
+#nd-sidebar a[href="/docs"],
+.fd-nav a[href="/courses"],
+.fd-nav a[href="/docs"] {
+  color: var(--color-fd-primary) !important;
+  font-weight: 600;
+}
+
+/* Color for Search Ctrl K trigger button, icon, and shortcut badge */
+#nd-sidebar button[aria-label="Search"],
+#nd-sidebar [aria-label="Search"],
+#nd-sidebar button:has(svg[class*="lucide-search"]),
+.fd-search-trigger {
+  color: var(--color-fd-primary) !important;
+}
+
+#nd-sidebar button[aria-label="Search"] svg,
+#nd-sidebar button:has(svg[class*="lucide-search"]) svg,
+.fd-search-trigger svg {
+  color: var(--color-fd-primary) !important;
+}
+
+#nd-sidebar kbd,
+.fd-search-trigger kbd {
+  color: var(--color-fd-primary) !important;
+  border-color: color-mix(in oklab, var(--color-fd-primary) 35%, transparent) !important;
+}
+
+/* Color for List Course folder headers in sidebar - matching Overview heading (#f3d49c in dark, #63490c in light) */
+#nd-sidebar button[data-accordion],
+#nd-sidebar .fd-folder-trigger,
+#nd-sidebar [data-sidebar-item] > button,
+#nd-sidebar [data-state] > button {
+  color: #63490c !important;
+  font-weight: 600;
+}
+
+.dark #nd-sidebar button[data-accordion],
+.dark #nd-sidebar .fd-folder-trigger,
+.dark #nd-sidebar [data-sidebar-item] > button,
+.dark #nd-sidebar [data-state] > button {
+  color: #f3d49c !important;
+}
+
+/* Centered thin divider line between top links and course folders (below Resources container) */
+#nd-sidebar div:has(> a[href="/docs"]) {
+  position: relative !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 14px !important;
+}
+
+#nd-sidebar div:has(> a[href="/docs"])::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 12.5%;
+  width: 75%;
+  height: 1px;
+  background-color: var(--color-fd-primary);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   8. RESPONSIVE TEXT ALIGNMENT & MDX DIV ALIGNMENT FIXES
+--------------------------------------------------------------------------- */
+
+/* Support HTML align attribute in MDX (align="right|center|left|justify") */
+div[align="right"], [align="right"] {
+  text-align: right !important;
+}
+
+div[align="center"], [align="center"] {
+  text-align: center !important;
+}
+
+div[align="left"], [align="left"] {
+  text-align: left !important;
+}
+
+div[align="justify"], [align="justify"] {
+  text-align: justify !important;
+}
+
+/* Eliminate unwanted top/bottom paragraph margins and collapse linebreaks inside aligned elements */
+div[align] > p:first-child,
+[align] > p:first-child {
+  margin-top: 0 !important;
+}
+
+div[align] > p:last-child,
+[align] > p:last-child {
+  margin-bottom: 0 !important;
+}
+
+div[align] > p,
+[align] > p {
+  text-align: inherit !important;
+  margin-top: 0.25em !important;
+  margin-bottom: 0.25em !important;
+}
+
+
+

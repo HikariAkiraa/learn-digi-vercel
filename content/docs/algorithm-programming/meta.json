@@ -1,0 +1,12 @@
+{
+  "title": "Algorithm Programming",
+  "description": "Mind the Code",
+  "icon": "Code2",
+  "image": "",
+  "level": "Intermediate",
+  "accent": "bg-rose-400",
+  "pages": [
+    "index",
+    "..."
+  ]
+}

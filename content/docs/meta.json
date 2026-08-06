@@ -1,4 +1,12 @@
 {
-  "title": "Modul Praktikum",
-  "pages": ["index", "setup", "sistem-digital-dasar", "pemrograman-dasar", "..."]
+  "title": "Practicum Modules",
+  "pages": [
+    "index",
+    "setup",
+    "dasar-sistem-digital",
+    "pemrograman-dasar",
+    "algorithm-programming",
+    "iot",
+    "..."
+  ]
 }

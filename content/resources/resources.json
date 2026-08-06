@@ -1,0 +1,26 @@
+[
+  {
+    "id": "res-1786023511552",
+    "title": "Dokumen Aseli Supersemar",
+    "description": "",
+    "fileUrl": "/uploads/resources/1786023506877_new20260221_141213.jpg",
+    "fileName": "new20260221_141213.jpg",
+    "fileSize": "1.7 MB",
+    "category": "Installer",
+    "accent": "bg-red-400",
+    "icon": "Download",
+    "createdAt": "2026-08-06T13:38:31.552Z"
+  },
+  {
+    "id": "res-1786007991656",
+    "title": "Dokumen Negara Sangat Rahasia",
+    "description": "turunkan doksli",
+    "fileUrl": "/uploads/resources/1786007969900_Flayer_Front.png",
+    "fileName": "Flayer Front.png",
+    "fileSize": "2.5 MB",
+    "category": "Dokumen",
+    "accent": "bg-amber-400",
+    "icon": "FileDown",
+    "createdAt": "2026-08-06T09:19:51.656Z"
+  }
+]

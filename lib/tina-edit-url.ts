@@ -12,7 +12,7 @@
  * flip this constant — that is the only thing that needs to change.
  */
 const TINA_COLLECTION = 'docs';
-const TINA_DOC_PATH_INCLUDES_EXTENSION = true;
+const TINA_DOC_PATH_INCLUDES_EXTENSION = false;
 
 export function tinaEditUrl(virtualPath: string): string {
   const normalised = virtualPath.replace(/\\/g, '/').replace(/^\/+/, '');
@@ -21,7 +21,7 @@ export function tinaEditUrl(virtualPath: string): string {
     ? (normalised.endsWith('.mdx') ? normalised : `${normalised}.mdx`)
     : normalised.replace(/\.mdx?$/, '');
 
-  return `/admin/index.html#/collections/edit/${TINA_COLLECTION}/${documentPath}`;
+  return `/admin/index.html#/~/docs/${documentPath}`;
 }
 
 /** Link straight to Tina's "new document" form for the docs collection. */

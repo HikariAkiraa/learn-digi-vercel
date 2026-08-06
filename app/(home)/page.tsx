@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { FullSearchTrigger } from 'fumadocs-ui/layouts/shared/slots/search-trigger';
 import {
   ArrowRight,
   BookOpenCheck,
@@ -8,221 +7,501 @@ import {
   ShieldCheck,
   TerminalSquare,
   Wrench,
+  CircuitBoard,
 } from 'lucide-react';
-import { courses } from '@/lib/courses';
+import { getCourses, type Course } from '@/lib/courses';
+import { getResources } from '@/lib/resources';
+import { BrandLogo } from '@/components/brand-logo';
+import { FadeInSection, StatShuffleCounter } from '@/components/scroll-animations';
+
+function InstagramIcon({ className = 'size-3.5' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
+function YoutubeIcon({ className = 'size-3.5' }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
+  const courses = getCourses();
+  const resources = getResources();
   return (
     <main className="flex flex-1 flex-col">
-      <Hero />
+      <Hero courses={courses} resourcesCount={resources.length} />
       <div className="rule-gold mx-auto w-full max-w-6xl" />
-      <CoursesSection />
+      <AboutSection />
       <div className="rule-gold mx-auto w-full max-w-6xl" />
-      <ToolsSection />
+      <MeetTheTeamSection />
     </main>
   );
 }
 
 /* -------------------------------------------------------------------------- */
 
-function Hero() {
+function Hero({ courses, resourcesCount }: { courses: Course[]; resourcesCount: number }) {
   return (
     <section className="relative overflow-hidden">
       <div className="tech-grid pointer-events-none absolute inset-0" aria-hidden />
 
-      <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-20 pt-24 text-center sm:pt-32">
-        <p className="eyebrow mb-5 text-sm text-fd-muted-foreground">
-          Laboratorium Digital · Dokumentasi Praktikum
-        </p>
+      <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-16 pt-8 text-center sm:pt-12">
 
-        <h1 className="font-display text-4xl font-semibold leading-[1.1] tracking-tight text-fd-foreground sm:text-6xl">
-          Semua modul praktikum,
-          <br />
-          <span className="text-fd-primary">satu tempat.</span>
+        <h1 className="font-display text-[60px] font-semibold leading-[1.1] tracking-tight text-fd-foreground sm:text-[60px]">
+          Digilab
+          <span className="text-fd-primary"> Archive</span>
         </h1>
 
         <p className="mt-6 max-w-xl text-balance text-lg text-fd-muted-foreground">
-          Panduan langkah demi langkah, prosedur operasi standar, dan catatan alat
-          untuk setiap mata praktikum — selalu versi terbaru.
+          Step-by-step guides, standard operating procedures, and environment setup notes.
         </p>
 
-        {/*
-          FullSearchTrigger opens the same Fumadocs search dialog as Cmd/Ctrl+K.
-          Reusing it means the hero search and the navbar search share one index
-          and one keyboard shortcut — no second search implementation to drift.
-        */}
-        <div className="mt-9 w-full max-w-lg">
-          <FullSearchTrigger className="w-full rounded-lg border border-fd-border bg-fd-card px-4 py-3 text-left shadow-[var(--shadow-elegant)] transition-colors hover:border-fd-primary/50" />
-        </div>
-
-        <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row">
+        <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
           <Link
-            href="/docs"
-            className="group inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 text-sm font-semibold text-fd-primary-foreground transition-transform hover:-translate-y-px"
+            href="/courses"
+            className="group inline-flex items-center gap-2 rounded-lg bg-fd-primary px-6 py-2.5 text-sm font-semibold text-fd-primary-foreground transition-transform hover:-translate-y-px"
           >
-            Mulai Belajar
+            All Courses
             <ArrowRight
               className="size-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden
             />
           </Link>
-
-          <Link
-            href="/courses"
-            className="inline-flex items-center gap-2 rounded-lg border border-fd-border px-5 py-2.5 text-sm font-semibold text-fd-foreground transition-colors hover:border-fd-primary/50 hover:bg-fd-accent"
-          >
-            <BookOpenCheck className="size-4" aria-hidden />
-            Lihat Semua Mata Praktikum
-          </Link>
         </div>
 
-        <dl className="mt-14 grid w-full grid-cols-3 gap-px overflow-hidden rounded-xl border border-fd-border bg-fd-border">
-          <Stat value={String(courses.length)} label="Mata praktikum" />
-          <Stat
-            value={String(courses.reduce((sum, course) => sum + course.modules, 0))}
-            label="Modul"
-          />
-          <Stat value="Git" label="Riwayat revisi" />
-        </dl>
+        <FadeInSection direction="bottom" delay={0} className="w-full" requireScroll={true}>
+          <dl className="mt-14 grid w-full grid-cols-3 gap-px overflow-hidden rounded-xl border border-fd-border bg-fd-border">
+            <StatShuffleCounter
+              targetValue={courses.length}
+              label="Laboratory Courses"
+              delay={0}
+            />
+            <StatShuffleCounter
+              targetValue={courses.reduce((sum, course) => sum + course.modules, 0)}
+              label="Total Modules"
+              delay={0}
+            />
+            <StatShuffleCounter
+              targetValue={resourcesCount}
+              label="Laboratory Resources"
+              delay={0}
+            />
+          </dl>
+        </FadeInSection>
       </div>
     </section>
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+/* -------------------------------------------------------------------------- */
+
+function AboutSection() {
   return (
-    <div className="bg-fd-background px-4 py-5">
-      <dt className="font-display text-2xl font-semibold text-fd-foreground">{value}</dt>
-      <dd className="mt-0.5 text-xs text-fd-muted-foreground">{label}</dd>
-    </div>
+    <section id="about" className="mx-auto w-full max-w-6xl px-6 sm:px-10 py-20">
+      <div className="grid items-center gap-10 lg:grid-cols-12">
+        {/* Left Column - Logo Image (Fade in left to right) */}
+        <div className="flex justify-center lg:col-span-5">
+          <FadeInSection direction="left" delay={0} className="w-full max-w-sm flex justify-center">
+            <div className="relative flex aspect-square w-full items-center justify-center rounded-2xl border border-fd-border bg-gradient-to-b from-fd-card to-fd-background p-8 shadow-[var(--shadow-elegant)] transition-all hover:border-fd-primary/50 group">
+              <div className="absolute inset-0 rounded-2xl bg-fd-primary/5 blur-xl group-hover:bg-fd-primary/10 transition-colors" aria-hidden />
+
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/about-lab-logo.png"
+                alt="Digital Laboratory DTE FTUI"
+                className="relative size-52 sm:size-60 object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+          </FadeInSection>
+        </div>
+
+        {/* Right Column - Title & Text Description (Fade in left to right with delay) */}
+        <div className="space-y-5 lg:col-span-7 pr-2 sm:pr-6">
+          <FadeInSection direction="left" delay={150}>
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-fd-foreground sm:text-4xl pb-2">
+              About the Digital Lab
+            </h2>
+
+            <p className="text-base sm:text-lg leading-relaxed text-fd-muted-foreground text-justify mb-4">
+              The <strong className="font-semibold text-fd-foreground">Digital Laboratory at DTE FTUI</strong> is a specialized facility dedicated to the practical study of digital systems and computer architecture. We provide hands-on learning experiences that help students bridge the gap between theoretical concepts and real-world hardware design.
+            </p>
+
+            <p className="text-base sm:text-lg leading-relaxed text-fd-muted-foreground text-justify">
+              Through comprehensive modules covering digital logic, VHDL, and assembly language, students master the fundamentals of modern embedded systems. Supported by a team of dedicated assistants, our mission is to cultivate innovative engineers equipped to tackle complex technological challenges.
+            </p>
+          </FadeInSection>
+        </div>
+      </div>
+    </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
 
-function CoursesSection() {
+const teamPhotoMaskStyle: React.CSSProperties = {
+  maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+};
+
+function MeetTheTeamSection() {
   return (
-    <section id="courses" className="mx-auto w-full max-w-6xl px-4 py-20">
-      <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow text-sm text-brand-gold-ink dark:text-brand-gold">
-            Kurikulum
-          </p>
-          <h2 className="font-display mt-1 text-3xl font-semibold tracking-tight">
-            Mata Praktikum
+    <section id="team" className="mx-auto w-full max-w-6xl px-6 sm:px-10 py-8 sm:py-10">
+      <FadeInSection direction="bottom" delay={0}>
+        <header className="mb-6 text-center">
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-fd-foreground sm:text-4xl">
+            Meet the Team
           </h2>
-        </div>
-        <Link
-          href="/courses"
-          className="group inline-flex items-center gap-1.5 text-sm font-medium text-fd-primary"
-        >
-          Semua mata praktikum
-          <ArrowRight
-            className="size-4 transition-transform group-hover:translate-x-0.5"
-            aria-hidden
-          />
-        </Link>
-      </header>
+        </header>
+      </FadeInSection>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {courses.slice(0, 6).map((course) => (
-          <Link
-            key={course.slug}
-            href={`/docs/${course.slug}`}
-            className="group relative flex flex-col overflow-hidden rounded-xl border border-fd-border bg-fd-card p-5 transition-all hover:-translate-y-0.5 hover:border-fd-primary/50 hover:shadow-[var(--shadow-elegant)]"
-          >
-            <span
-              className={`absolute inset-x-0 top-0 h-0.5 ${course.accent} opacity-60 transition-opacity group-hover:opacity-100`}
-              aria-hidden
-            />
+      {/* Top Row: Daus (Col 1), Welcome Text (Col 2 & 3 merged), DS (Col 4) */}
+      <FadeInSection direction="bottom" delay={150}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-stretch max-w-6xl mx-auto">
+          {/* Slot 1: Head of Digital Laboratory (Pak Firdaus) */}
+          <div className="flex flex-col items-center justify-center">
+            <div className="relative w-full overflow-hidden rounded-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/team-head-lab.png"
+                alt="Muhammad Firdaus Syawaludin Lubis, S.T., M.T., Ph.D., CertDA"
+                className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                style={teamPhotoMaskStyle}
+              />
+            </div>
+          </div>
 
-            <course.icon className="mb-4 size-6 text-fd-primary" aria-hidden />
-
-            <h3 className="font-display text-lg font-semibold leading-snug text-fd-card-foreground">
-              {course.title}
-            </h3>
-            <p className="mt-2 flex-1 text-sm leading-relaxed text-fd-muted-foreground">
-              {course.description}
-            </p>
-
-            <p className="mt-4 flex items-center gap-2 text-xs text-fd-muted-foreground">
-              <span className="rounded border border-fd-border px-1.5 py-0.5">
-                {course.level}
-              </span>
-              <span>{course.modules} modul</span>
-            </p>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-const toolLinks = [
-  {
-    icon: Download,
-    title: 'Instalasi Perangkat Lunak',
-    body: 'Toolchain simulasi, IDE, dan driver board — beserta versi yang dipakai di lab.',
-    href: '/docs/setup/instalasi',
-  },
-  {
-    icon: TerminalSquare,
-    title: 'Konfigurasi Lingkungan',
-    body: 'Variabel environment, akses serial port, dan pemeriksaan instalasi.',
-    href: '/docs/setup/lingkungan',
-  },
-  {
-    icon: ClipboardList,
-    title: 'SOP Praktikum',
-    body: 'Alur sebelum, selama, dan sesudah praktikum. Termasuk format laporan.',
-    href: '/docs/setup/sop',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Keselamatan Kerja (K3)',
-    body: 'Penanganan alat bertegangan, ESD, dan prosedur saat terjadi insiden.',
-    href: '/docs/setup/k3',
-  },
-];
-
-function ToolsSection() {
-  return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-20">
-      <header className="mb-10">
-        <p className="eyebrow text-sm text-brand-gold-ink dark:text-brand-gold">
-          Sebelum mulai
-        </p>
-        <h2 className="font-display mt-1 flex items-center gap-2.5 text-3xl font-semibold tracking-tight">
-          <Wrench className="size-6 text-fd-primary" aria-hidden />
-          Alat &amp; Persiapan Lingkungan
-        </h2>
-        <p className="mt-3 max-w-2xl text-fd-muted-foreground">
-          Selesaikan bagian ini sekali di awal semester. Modul praktikum
-          mengasumsikan semuanya sudah terpasang.
-        </p>
-      </header>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        {toolLinks.map((tool) => (
-          <Link
-            key={tool.href}
-            href={tool.href}
-            className="group flex gap-4 rounded-xl border border-fd-border bg-fd-card p-5 transition-colors hover:border-fd-primary/50 hover:bg-fd-accent"
-          >
-            <tool.icon
-              className="mt-0.5 size-5 shrink-0 text-brand-gold-ink dark:text-brand-gold"
-              aria-hidden
-            />
-            <div>
-              <h3 className="font-semibold text-fd-card-foreground">{tool.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-fd-muted-foreground">
-                {tool.body}
+          {/* Slots 2 & 3: Text Card taking exactly 2 photo slots */}
+          <div className="col-span-2 flex flex-col justify-center rounded-2xl border border-cyan-500/40 bg-gradient-to-b from-[#141824] to-[#0c0f17] p-4 sm:p-5 shadow-[0_0_20px_rgba(6,182,212,0.12)]">
+            <div className="space-y-3 text-xs sm:text-xs md:text-sm leading-relaxed text-slate-300 italic text-justify">
+              <p>
+                <span className="text-cyan-400 font-semibold not-italic">This laboratory</span> serves as a space for you to bridge academic theory with <span className="text-cyan-400 font-semibold not-italic">real-world technological applications</span>. We encourage all students to go beyond simply fulfilling curriculum requirements, and instead, boldly explore digital technologies to create <span className="text-cyan-400 font-semibold not-italic">creative and impactful solutions for the future</span>.
+              </p>
+              <p>
+                We invite you to treat the Digital Lab as a hub for collaboration and experimentation, <span className="text-cyan-400 font-semibold not-italic">where you can learn without the fear of failure</span>. Use every step of your learning process here to sharpen your resilience and <span className="text-cyan-400 font-semibold not-italic">logical thinking as future engineers</span>. Welcome aboard, and let&apos;s build a dynamic culture of innovation together with the Digital Lab family.
               </p>
             </div>
-          </Link>
-        ))}
+          </div>
+
+          {/* Slot 4: Lab Coordinator (Daffa Sayra Firdaus - DS) */}
+          <div className="flex flex-col items-center justify-center">
+            <div className="relative w-full overflow-hidden rounded-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/team-lab-coordinator.png"
+                alt="Daffa Sayra Firdaus - Lab Coordinator"
+                className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                style={teamPhotoMaskStyle}
+              />
+            </div>
+          </div>
+        </div>
+      </FadeInSection>
+
+      {/* Sub-grid for Laboratory Assistants (BH, CH, JD, MF / AX, RE Centered) */}
+      <div className="mt-5 pt-4 border-t border-fd-border/40 max-w-6xl mx-auto space-y-5">
+        {/* Row 1: BH, CH, JD, MF (4 Columns) */}
+        <FadeInSection direction="bottom">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-start">
+            {/* Row 1 - Col 1: BH (Bryan Herdianto) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-bh.jpg"
+                  alt="Bryan Herdianto"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* Row 1 - Col 2: CH (Christian Hadiwijaya) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-ch.jpg"
+                  alt="Christian Hadiwijaya"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* Row 1 - Col 3: JD (Jesaya David G.N.P) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-jd.jpg"
+                  alt="Jesaya David G.N.P"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* Row 1 - Col 4: MF (Muhammad Nadzhif Fikri) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-mf.jpg"
+                  alt="Muhammad Nadzhif Fikri"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
+
+        {/* Row 2: AX and RE Centered Symmetrically */}
+        <FadeInSection direction="bottom">
+          <div className="flex flex-wrap justify-center gap-5 max-w-6xl mx-auto">
+            {/* AX (Alexander Christhian) */}
+            <div className="flex flex-col items-center justify-center w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-ax.jpg"
+                  alt="Alexander Christhian"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* RE (Muhammad Riyan Satrio) */}
+            <div className="flex flex-col items-center justify-center w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-re.jpg"
+                  alt="Muhammad Riyan Satrio"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
+      </div>
+
+      {/* Grid for Comp Eng '24 Assistants (KH, NA, DY, NZ / KZ, JR, VN, QS) */}
+      <div className="mt-5 pt-4 border-t border-fd-border/40 max-w-6xl mx-auto space-y-5">
+        {/* Row 1: KH, NA, DY, NZ */}
+        <FadeInSection direction="bottom">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-start">
+            {/* KH (Carlsson Khovis) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-kh.jpg"
+                  alt="Carlsson Khovis"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* NA (Novan Agung Wicaksono) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-na.jpg"
+                  alt="Novan Agung Wicaksono"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* DY (Muhammad Dhiya 'ulhaq) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-dy.jpg"
+                  alt="Muhammad Dhiya 'ulhaq"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* NZ (Nabil Putra Nurfariz) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-nz.jpg"
+                  alt="Nabil Putra Nurfariz"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
+
+        {/* Row 2: KZ, JR, VN, QS */}
+        <FadeInSection direction="bottom">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-start">
+            {/* KZ (Khalisa Zahra Maulana) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-kz.jpg"
+                  alt="Khalisa Zahra Maulana"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* JR (Raja Avicenna A. V.) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-jr.jpg"
+                  alt="Raja Avicenna A. V."
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* VN (Vincenzo Fabian Tisila) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-vn.jpg"
+                  alt="Vincenzo Fabian Tisila"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* QS (Qais Ismail) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-qs.jpg"
+                  alt="Qais Ismail"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
+      </div>
+
+      {/* Grid for Comp Eng '25 Assistants (NH, RS, SH, SI / BD, KV Centered) */}
+      <div className="mt-5 pt-4 border-t border-fd-border/40 max-w-6xl mx-auto space-y-5">
+        {/* Row 1: NH, RS, SH, SI (4 Columns) */}
+        <FadeInSection direction="bottom">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-start">
+            {/* NH (Nicholas Michael Halim) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-nh.jpg"
+                  alt="Nicholas Michael Halim"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* RS (Raisa Siti Hapsari) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-rs.jpg"
+                  alt="Raisa Siti Hapsari"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* SH (Shannisa Al Khalisha) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-sh.jpg"
+                  alt="Shannisa Al Khalisha"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* SI (Said Abdullah Samy) */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-si.jpg"
+                  alt="Said Abdullah Samy"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
+
+        {/* Row 2: BD and KV Centered Symmetrically */}
+        <FadeInSection direction="bottom">
+          <div className="flex flex-wrap justify-center gap-5 max-w-6xl mx-auto">
+            {/* BD (Abdiel Deandra El Dzaky) */}
+            <div className="flex flex-col items-center justify-center w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-bd.jpg"
+                  alt="Abdiel Deandra El Dzaky"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+
+            {/* KV (Kenneth Vittorio Karyadi) */}
+            <div className="flex flex-col items-center justify-center w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team-kv.jpg"
+                  alt="Kenneth Vittorio Karyadi"
+                  className="w-full h-auto rounded-2xl object-contain drop-shadow-xl"
+                  style={teamPhotoMaskStyle}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeInSection>
       </div>
     </section>
   );

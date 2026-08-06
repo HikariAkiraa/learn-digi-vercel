@@ -1,5 +1,12 @@
 {
-  "title": "Pemrograman Dasar",
+  "title": "Basic Programming",
+  "description": "Control flows, fundamental data structures, and best practices for writing clean code.",
   "icon": "Code2",
-  "pages": ["index", "..."]
+  "level": "Basic",
+  "pages": [
+    "index",
+    "..."
+  ],
+  "image": "",
+  "accent": "bg-amber-400"
 }

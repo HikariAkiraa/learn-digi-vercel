@@ -1,6 +1,6 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { CircuitBoard } from 'lucide-react';
 import { AdminNavButton } from '@/components/admin-nav-button';
+import { BrandLogo } from '@/components/brand-logo';
 
 /**
  * Shared navbar/layout options.
@@ -14,7 +14,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <CircuitBoard className="size-5 text-fd-primary" aria-hidden />
+          <BrandLogo className="size-6" />
           <span className="font-semibold tracking-tight">
             Learn<span className="text-fd-primary">Digi</span>
           </span>
@@ -31,8 +31,8 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         type: 'main',
-        text: 'Modul',
-        url: '/docs',
+        text: 'Resources',
+        url: '/resources',
       },
       {
         // Rendered on the right-hand side of the navbar, next to the theme
@@ -43,8 +43,7 @@ export function baseOptions(): BaseLayoutProps {
       },
     ],
     themeSwitch: {
-      enabled: true,
-      mode: 'light-dark-system',
+      enabled: false,
     },
   };
 }

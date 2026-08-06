@@ -1,0 +1,12 @@
+{
+  "title": "IoT",
+  "description": "blablabla",
+  "icon": "Wrench",
+  "image": "",
+  "level": "Advanced",
+  "accent": "bg-teal-400",
+  "pages": [
+    "index",
+    "..."
+  ]
+}

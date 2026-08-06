@@ -1,0 +1,15 @@
+{
+  "title": "Dasar Sistem Digital",
+  "pages": [
+    "dasar-sistem-digital",
+    "module-1-introduction-to-digital-circuit",
+    "module-2-basic-logic-gate",
+    "module-3",
+    "..."
+  ],
+  "description": "Practicum modules and learning materials for Dasar Sistem Digital.",
+  "icon": "BookOpen",
+  "image": "",
+  "level": "Basic",
+  "accent": "bg-purple-400"
+}

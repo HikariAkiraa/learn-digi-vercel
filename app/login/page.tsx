@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-import { CircuitBoard, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { auth, signIn } from '@/auth';
+import { BrandLogo } from '@/components/brand-logo';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Masuk Admin',
+  title: 'Admin Sign In',
   robots: { index: false, follow: false },
 };
 
@@ -22,9 +23,9 @@ export default function LoginPage(props: LoginPageProps) {
         <main className="relative flex flex-1 items-center justify-center px-4 py-24">
           <div className="tech-grid pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative w-full max-w-sm rounded-xl border border-fd-border bg-fd-card p-8 shadow-[var(--shadow-elegant)]">
-            <CircuitBoard className="size-8 text-fd-primary animate-pulse" aria-hidden />
+            <BrandLogo className="size-10 animate-pulse" />
             <h1 className="font-display mt-5 text-2xl font-semibold tracking-tight">
-              Masuk sebagai Admin
+              Admin Sign In
             </h1>
           </div>
         </main>
@@ -36,7 +37,7 @@ export default function LoginPage(props: LoginPageProps) {
 }
 
 async function LoginContent({ searchParams }: LoginPageProps) {
-  const { callbackUrl = '/admin', error } = await searchParams;
+  const { callbackUrl = '/', error } = await searchParams;
 
   const session = await auth();
   if (session?.user?.isAdmin) redirect(callbackUrl);
@@ -46,14 +47,13 @@ async function LoginContent({ searchParams }: LoginPageProps) {
       <div className="tech-grid pointer-events-none absolute inset-0" aria-hidden />
 
       <div className="relative w-full max-w-sm rounded-xl border border-fd-border bg-fd-card p-8 shadow-[var(--shadow-elegant)]">
-        <CircuitBoard className="size-8 text-fd-primary" aria-hidden />
+        <BrandLogo className="size-10" />
 
         <h1 className="font-display mt-5 text-2xl font-semibold tracking-tight">
-          Masuk sebagai Admin
+          Admin Sign In
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-fd-muted-foreground">
-          Akses CMS dibatasi pada daftar email yang disetujui. Gunakan akun
-          Google yang terdaftar.
+          Admin access is restricted to whitelisted email accounts. Please sign in with your authorized Google account.
         </p>
 
         {error ? (
@@ -62,8 +62,8 @@ async function LoginContent({ searchParams }: LoginPageProps) {
             className="mt-5 rounded-lg border border-fd-error/45 bg-fd-error/10 px-3 py-2.5 text-sm text-fd-error"
           >
             {error === 'AccessDenied'
-              ? 'Akun tersebut tidak ada dalam daftar admin. Hubungi pengelola lab untuk ditambahkan.'
-              : 'Gagal masuk. Silakan coba lagi.'}
+              ? 'This account is not on the admin whitelist. Contact the lab manager to request access.'
+              : 'Sign in failed. Please try again.'}
           </p>
         ) : null}
 
@@ -76,19 +76,23 @@ async function LoginContent({ searchParams }: LoginPageProps) {
         >
           <button
             type="submit"
-            className="inline-flex w-full items-center justify-center gap-2.5 rounded-lg bg-fd-primary px-4 py-2.5 text-sm font-semibold text-fd-primary-foreground transition-transform hover:-translate-y-px"
+            className="inline-flex w-full items-center justify-center gap-2.5 rounded-lg bg-fd-primary px-4 py-2.5 text-sm font-semibold text-fd-primary-foreground transition-transform hover:-translate-y-px cursor-pointer shadow-xs"
           >
             <GoogleMark />
-            Lanjutkan dengan Google
+            Continue with Google
           </button>
         </form>
 
-        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-fd-muted-foreground">
-          <ShieldCheck className="mt-px size-4 shrink-0" aria-hidden />
-          Daftar admin dikelola lewat variabel environment
-          <code className="mx-1">ALLOWED_ADMIN_EMAILS</code>. Tidak ada
-          pendaftaran mandiri.
-        </p>
+        <div className="mt-6 flex items-start gap-2.5 text-xs text-fd-muted-foreground border-t border-fd-border/50 pt-4">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-fd-primary" aria-hidden />
+          <p className="leading-relaxed">
+            Admin access is managed via the{' '}
+            <code className="rounded bg-fd-muted px-1.5 py-0.5 font-mono text-[11px] text-brand-gold-ink dark:text-brand-beige border border-fd-border">
+              ALLOWED_ADMIN_EMAILS
+            </code>{' '}
+            environment variable. Self-registration is disabled.
+          </p>
+        </div>
       </div>
     </main>
   );
