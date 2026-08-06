@@ -70,16 +70,6 @@ const docsCollection: Collection = {
   format: 'mdx',
 
   ui: {
-    /**
-     * "View page" link inside the Tina editor. Fumadocs treats `index.mdx` as
-     * the folder root, so strip it to get the real URL.
-     */
-    router: ({ document }) => {
-      const segments = (document._sys.breadcrumbs ?? []).filter(
-        (segment) => segment !== 'index',
-      );
-      return `/docs/${segments.join('/')}`;
-    },
 
 
     filename: {
