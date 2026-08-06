@@ -81,11 +81,6 @@ const docsCollection: Collection = {
       return `/docs/${segments.join('/')}`;
     },
 
-    /** New documents start unpublished. Publishing is always an explicit act. */
-    defaultItem: () => ({
-      draft: true,
-      title: 'Modul Baru',
-    }),
 
     filename: {
       // Slugify what the editor types so URLs stay clean.

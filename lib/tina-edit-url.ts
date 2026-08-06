@@ -21,7 +21,9 @@ export function tinaEditUrl(virtualPath: string): string {
     ? normalised
     : normalised.replace(/\.mdx?$/, '');
 
-  return `/admin/index.html#/collections/edit/${TINA_COLLECTION}/${documentPath}`;
+  const encodedPath = documentPath.replace(/\//g, '~');
+
+  return `/admin/index.html#/collections/edit/${TINA_COLLECTION}/${encodedPath}`;
 }
 
 /** Link straight to Tina's "new document" form for the docs collection. */
