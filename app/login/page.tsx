@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { CircuitBoard, ShieldCheck } from 'lucide-react';
 import { auth, signIn } from '@/auth';
@@ -14,12 +15,27 @@ interface LoginPageProps {
   searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }
 
-/**
- * Only whitelisted Google accounts can complete this flow — the `signIn`
- * callback in auth.ts rejects everyone else *before* a session cookie is
- * issued, so a rejected sign-in lands back here with ?error=AccessDenied.
- */
-export default async function LoginPage({ searchParams }: LoginPageProps) {
+export default function LoginPage(props: LoginPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <main className="relative flex flex-1 items-center justify-center px-4 py-24">
+          <div className="tech-grid pointer-events-none absolute inset-0" aria-hidden />
+          <div className="relative w-full max-w-sm rounded-xl border border-fd-border bg-fd-card p-8 shadow-[var(--shadow-elegant)]">
+            <CircuitBoard className="size-8 text-fd-primary animate-pulse" aria-hidden />
+            <h1 className="font-display mt-5 text-2xl font-semibold tracking-tight">
+              Masuk sebagai Admin
+            </h1>
+          </div>
+        </main>
+      }
+    >
+      <LoginContent searchParams={props.searchParams} />
+    </Suspense>
+  );
+}
+
+async function LoginContent({ searchParams }: LoginPageProps) {
   const { callbackUrl = '/admin', error } = await searchParams;
 
   const session = await auth();
