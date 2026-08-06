@@ -22,7 +22,8 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { editSlug, title, description, icon, image, level, accent } = await req.json();
+    const body = await req.json();
+    const { editSlug, title, description, icon, image, level, accent } = body || {};
 
     if (!title || typeof title !== 'string' || title.trim() === '') {
       return NextResponse.json({ error: 'Course title is required.' }, { status: 400 });
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
     if (editSlug && typeof editSlug === 'string') {
       const courseDir = path.join(process.cwd(), 'content', 'docs', editSlug);
       if (!fs.existsSync(courseDir)) {
-        return NextResponse.json({ error: 'Course folder not found.' }, { status: 444 });
+        return NextResponse.json({ error: `Course folder '${editSlug}' not found.` }, { status: 404 });
       }
 
       const metaPath = path.join(courseDir, 'meta.json');
@@ -48,10 +49,10 @@ export async function POST(req: Request) {
         ...existingMeta,
         title: title.trim(),
         description: (description || '').trim(),
-        icon: icon || 'BookOpen',
+        icon: icon || existingMeta.icon || 'BookOpen',
         image: (image || '').trim(),
-        level: level || 'Basic',
-        accent: accent || 'bg-brand-cyan',
+        level: level || existingMeta.level || 'Basic',
+        accent: accent || existingMeta.accent || 'bg-brand-cyan',
         pages: existingMeta.pages || ['index', '...'],
       };
 
@@ -138,7 +139,11 @@ Write documentation content here...
       url: `/docs/${slug}`,
       message: `Course '${title}' successfully created.`,
     });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to save course.' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Failed to save course error:', error);
+    return NextResponse.json(
+      { error: error?.message || String(error) || 'Failed to save course.' },
+      { status: 500 }
+    );
   }
 }
