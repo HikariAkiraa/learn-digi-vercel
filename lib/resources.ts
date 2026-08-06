@@ -148,10 +148,23 @@ export function getResources(): Resource[] {
   });
 }
 
+import { saveFileContent } from '@/lib/github-sync';
+
 export function saveResources(resources: RawResourceData[]): void {
   const dirPath = path.dirname(RESOURCES_FILE);
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
-  fs.writeFileSync(RESOURCES_FILE, JSON.stringify(resources, null, 2), 'utf-8');
+  try {
+    fs.writeFileSync(RESOURCES_FILE, JSON.stringify(resources, null, 2), 'utf-8');
+  } catch (e) {}
+}
+
+export async function saveResourcesAsync(resources: RawResourceData[]): Promise<void> {
+  saveResources(resources);
+  await saveFileContent({
+    filePath: 'content/resources/resources.json',
+    content: JSON.stringify(resources, null, 2),
+    commitMessage: 'Update laboratory resources list',
+  });
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { isAllowedAdmin } from '@/lib/admin';
-import { getResources, saveResources, RawResourceData } from '@/lib/resources';
+import { getResources, saveResourcesAsync, RawResourceData } from '@/lib/resources';
 import { revalidatePath } from 'next/cache';
 
 export async function POST(req: Request) {
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
       ];
     }
 
-    saveResources(updatedList);
+    await saveResourcesAsync(updatedList);
 
     try {
       revalidatePath('/resources');

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { isAllowedAdmin } from '@/lib/admin';
-import { getResources, saveResources } from '@/lib/resources';
+import { getResources, saveResourcesAsync } from '@/lib/resources';
 import { revalidatePath } from 'next/cache';
 
 export async function POST(req: Request) {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         createdAt: res.createdAt,
       }));
 
-    saveResources(updatedList);
+    await saveResourcesAsync(updatedList);
 
     try {
       revalidatePath('/resources');

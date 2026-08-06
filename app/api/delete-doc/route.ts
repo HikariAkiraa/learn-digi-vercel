@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { auth } from '@/auth';
 import { isAllowedAdmin } from '@/lib/admin';
+import { deleteFileFromGitHub, saveFileContent } from '@/lib/github-sync';
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -29,23 +30,29 @@ export async function POST(request: Request) {
       relativeFilePath += '.mdx';
     }
 
-    const absolutePath = path.join(process.cwd(), 'content', 'docs', relativeFilePath);
+    const repoDocPath = `content/docs/${relativeFilePath}`;
 
-    if (fs.existsSync(absolutePath)) {
-      // Delete file from disk
-      fs.unlinkSync(absolutePath);
-    }
+    await deleteFileFromGitHub({
+      filePath: repoDocPath,
+      commitMessage: `Delete module: ${relativeFilePath}`,
+    });
 
     // Also remove from meta.json if meta.json exists in directory
-    const dirPath = path.dirname(absolutePath);
-    const metaPath = path.join(dirPath, 'meta.json');
-    if (fs.existsSync(metaPath)) {
+    const dirRelative = path.dirname(relativeFilePath).replace(/\\/g, '/');
+    const relativeMetaPath = `content/docs/${dirRelative === '.' ? '' : dirRelative + '/'}meta.json`;
+    const absoluteMetaPath = path.join(process.cwd(), relativeMetaPath);
+
+    if (fs.existsSync(absoluteMetaPath)) {
       try {
         const fileBase = path.basename(relativeFilePath, path.extname(relativeFilePath));
-        const metaContent = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+        const metaContent = JSON.parse(fs.readFileSync(absoluteMetaPath, 'utf-8'));
         if (Array.isArray(metaContent.pages)) {
           metaContent.pages = metaContent.pages.filter((p: string) => p !== fileBase);
-          fs.writeFileSync(metaPath, JSON.stringify(metaContent, null, 2), 'utf-8');
+          await saveFileContent({
+            filePath: relativeMetaPath,
+            content: JSON.stringify(metaContent, null, 2),
+            commitMessage: `Remove ${fileBase} from meta.json`,
+          });
         }
       } catch (e) {
         console.error('Failed to update meta.json on deletion:', e);
@@ -53,8 +60,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true, message: 'Document deleted successfully' });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error deleting document:', err);
-    return NextResponse.json({ error: 'Failed to delete document file' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || 'Failed to delete document file' }, { status: 500 });
   }
 }

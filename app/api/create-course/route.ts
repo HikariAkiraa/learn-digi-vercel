@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { auth } from '@/auth';
 import { isAllowedAdmin } from '@/lib/admin';
+import { saveFileContent } from '@/lib/github-sync';
 
 function slugify(text: string): string {
   return text
@@ -31,12 +32,8 @@ export async function POST(req: Request) {
 
     // MODE EDIT
     if (editSlug && typeof editSlug === 'string') {
-      const courseDir = path.join(process.cwd(), 'content', 'docs', editSlug);
-      if (!fs.existsSync(courseDir)) {
-        return NextResponse.json({ error: `Course folder '${editSlug}' not found.` }, { status: 404 });
-      }
-
-      const metaPath = path.join(courseDir, 'meta.json');
+      const relativeMetaPath = `content/docs/${editSlug}/meta.json`;
+      const metaPath = path.join(process.cwd(), relativeMetaPath);
       let existingMeta: Record<string, any> = {};
 
       if (fs.existsSync(metaPath)) {
@@ -56,7 +53,11 @@ export async function POST(req: Request) {
         pages: existingMeta.pages || ['index', '...'],
       };
 
-      fs.writeFileSync(metaPath, JSON.stringify(updatedMeta, null, 2), 'utf-8');
+      await saveFileContent({
+        filePath: relativeMetaPath,
+        content: JSON.stringify(updatedMeta, null, 2),
+        commitMessage: `Update course meta: ${title.trim()}`,
+      });
 
       try {
         const { revalidatePath } = await import('next/cache');
@@ -78,13 +79,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid title format.' }, { status: 400 });
     }
 
-    const courseDir = path.join(process.cwd(), 'content', 'docs', slug);
-
-    if (!fs.existsSync(courseDir)) {
-      fs.mkdirSync(courseDir, { recursive: true });
-    }
-
-    const metaPath = path.join(courseDir, 'meta.json');
+    const relativeMetaPath = `content/docs/${slug}/meta.json`;
     const metaData = {
       title: title.trim(),
       description: (description || '').trim(),
@@ -94,11 +89,15 @@ export async function POST(req: Request) {
       accent: accent || 'bg-brand-cyan',
       pages: ['index', '...'],
     };
-    fs.writeFileSync(metaPath, JSON.stringify(metaData, null, 2), 'utf-8');
 
-    const indexPath = path.join(courseDir, 'index.mdx');
-    if (!fs.existsSync(indexPath)) {
-      const indexContent = `---
+    await saveFileContent({
+      filePath: relativeMetaPath,
+      content: JSON.stringify(metaData, null, 2),
+      commitMessage: `Create course: ${title.trim()}`,
+    });
+
+    const relativeIndexPath = `content/docs/${slug}/index.mdx`;
+    const indexContent = `---
 title: 'Overview'
 description: '${(description || '').trim().replace(/'/g, "\\'")}'
 draft: false
@@ -106,8 +105,12 @@ draft: false
 
 Write documentation content here...
 `;
-      fs.writeFileSync(indexPath, indexContent, 'utf-8');
-    }
+
+    await saveFileContent({
+      filePath: relativeIndexPath,
+      content: indexContent,
+      commitMessage: `Create index overview for course: ${title.trim()}`,
+    });
 
     const parentMetaPath = path.join(process.cwd(), 'content', 'docs', 'meta.json');
     if (fs.existsSync(parentMetaPath)) {
@@ -121,7 +124,11 @@ Write documentation content here...
             } else {
               parentMeta.pages.push(slug);
             }
-            fs.writeFileSync(parentMetaPath, JSON.stringify(parentMeta, null, 2), 'utf-8');
+            await saveFileContent({
+              filePath: 'content/docs/meta.json',
+              content: JSON.stringify(parentMeta, null, 2),
+              commitMessage: `Add ${slug} to top-level meta.json`,
+            });
           }
         }
       } catch (e) {}

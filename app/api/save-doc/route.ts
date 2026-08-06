@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { auth } from '@/auth';
 import { isAllowedAdmin } from '@/lib/admin';
+import { saveFileContent } from '@/lib/github-sync';
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -30,20 +29,17 @@ export async function POST(request: Request) {
       relativeFilePath += '.mdx';
     }
 
-    const absolutePath = path.join(process.cwd(), 'content', 'docs', relativeFilePath);
+    const repoFilePath = `content/docs/${relativeFilePath}`;
 
-    // Ensure parent directory exists
-    const dirPath = path.dirname(absolutePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-
-    // Write file directly to disk
-    fs.writeFileSync(absolutePath, content, 'utf-8');
+    await saveFileContent({
+      filePath: repoFilePath,
+      content,
+      commitMessage: `Update module documentation: ${relativeFilePath}`,
+    });
 
     return NextResponse.json({ success: true, message: 'Document saved successfully' });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error saving document:', err);
-    return NextResponse.json({ error: 'Failed to save document file' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || 'Failed to save document file' }, { status: 500 });
   }
 }
