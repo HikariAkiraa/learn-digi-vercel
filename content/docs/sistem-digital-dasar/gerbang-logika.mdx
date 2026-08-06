@@ -1,0 +1,52 @@
+---
+title: Modul 1 — Gerbang Logika
+description: Verifikasi tabel kebenaran gerbang AND, OR, NOT, NAND, NOR, XOR, dan XNOR.
+draft: false
+course: sistem-digital-dasar
+---
+
+## Tujuan
+
+Setelah menyelesaikan modul ini, praktikan mampu membaca datasheet IC gerbang
+logika dan memverifikasi tabel kebenaran secara eksperimental.
+
+## Alat dan bahan
+
+<Files>
+  <Folder name="IC" defaultOpen>
+    <File name="7408 — quad 2-input AND" />
+    <File name="7432 — quad 2-input OR" />
+    <File name="7404 — hex inverter" />
+  </Folder>
+  <File name="Breadboard" />
+  <File name="Catu daya 5 V" />
+  <File name="Multimeter" />
+</Files>
+
+<SafetyNote level="warning">
+IC seri 74xx rusak permanen di atas 5.5 V. Ukur tegangan catu daya dengan
+multimeter sebelum menyambungkannya ke breadboard.
+</SafetyNote>
+
+## Langkah kerja
+
+<Steps>
+  <Step>Pasang IC 7408 di breadboard, jembatani pin 14 ke +5 V dan pin 7 ke ground.</Step>
+  <Step>Hubungkan input A dan B ke sakelar, output ke LED dengan resistor 330 Ω.</Step>
+  <Step>Isi tabel kebenaran untuk keempat kombinasi input.</Step>
+  <Step>Ulangi untuk 7432 dan 7404.</Step>
+</Steps>
+
+## Data pengamatan
+
+| A | B | AND | OR | XOR |
+| - | - | --- | -- | --- |
+| 0 | 0 |     |    |     |
+| 0 | 1 |     |    |     |
+| 1 | 0 |     |    |     |
+| 1 | 1 |     |    |     |
+
+## Pertanyaan
+
+1. Mengapa NAND disebut gerbang universal?
+2. Berapa gerbang NAND minimum untuk membentuk XOR? Gambarkan.

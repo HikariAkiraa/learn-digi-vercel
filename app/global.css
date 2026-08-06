@@ -1,0 +1,227 @@
+/* ---------------------------------------------------------------------------
+   Learn Digi — global stylesheet
+   Tailwind CSS v4 (CSS-first config) + Fumadocs UI preset override.
+
+   Load order matters:
+     1. tailwindcss                  — engine + @theme machinery
+     2. fumadocs-ui/css/neutral.css  — Fumadocs' default --color-fd-* palette
+     3. fumadocs-ui/css/preset.css   — Fumadocs component styles
+     4. our overrides                — must come last to win
+--------------------------------------------------------------------------- */
+
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* ---------------------------------------------------------------------------
+   1. BRAND TOKENS (mode-independent)
+
+   These generate real Tailwind utilities: bg-brand-cyan, text-brand-gold,
+   border-brand-navy, ring-brand-teal, and so on. Use these when you want the
+   raw brand colour regardless of theme; use the --color-fd-* semantic tokens
+   below for anything that must adapt between light and dark.
+--------------------------------------------------------------------------- */
+
+@theme static {
+  --color-brand-ink: #141519; /* base dark canvas          */
+  --color-brand-navy: #0369a1; /* deep blue                 */
+  --color-brand-cyan: #03eaff; /* bright cyan accent        */
+  --color-brand-teal: #8ba8a6; /* muted teal / grey         */
+  --color-brand-gold: #d4a017; /* gold / mustard            */
+  --color-brand-beige: #f3d49c; /* light beige highlight     */
+
+  /* Deep navy used for body copy in light mode. */
+  --color-brand-abyss: #0b2942;
+  /* Gold darkened to a text-safe value (see contrast note in section 4). */
+  --color-brand-gold-ink: #63490c;
+
+  --font-display: var(--font-serif-display), ui-serif, Georgia, 'Times New Roman', serif;
+}
+
+/* ---------------------------------------------------------------------------
+   2. LIGHT MODE
+
+   Brief: "clean, very soft off-white/light cream background, deep rich blues
+   for primary text, gold/cyan accents adapted for buttons and links."
+
+   Cream canvas (#FAF8F3) + deep navy ink (#0B2942) = 14.0:1 contrast, which is
+   comfortable for the long reading sessions a practicum module implies.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-fd-background: #faf8f3;
+  --color-fd-foreground: #0b2942;
+
+  /* Surfaces */
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #0b2942;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #0b2942;
+  --color-fd-muted: #f1ede4;
+  --color-fd-secondary: #f1ede4;
+  --color-fd-secondary-foreground: #0b2942;
+
+  /* Secondary text, sidebar labels, captions. 5.3:1 on the cream canvas. */
+  --color-fd-muted-foreground: #5a6b6a;
+
+  /* Links, active sidebar item, primary buttons. 5.6:1 on cream. */
+  --color-fd-primary: #0369a1;
+  --color-fd-primary-foreground: #faf8f3;
+
+  /* Hover / selected surfaces — a warm sand rather than a grey. */
+  --color-fd-accent: #ebe4d4;
+  --color-fd-accent-foreground: #0b2942;
+
+  --color-fd-border: #e3dccd;
+  --color-fd-ring: #0369a1;
+  --color-fd-overlay: hsla(212, 60%, 8%, 0.28);
+}
+
+/* ---------------------------------------------------------------------------
+   3. DARK MODE
+
+   Exactly the palette from the brief, with one deliberate substitution — see
+   the contrast note in section 4.
+--------------------------------------------------------------------------- */
+
+.dark {
+  --color-fd-background: #141519;
+  --color-fd-foreground: #ede8df;
+
+  --color-fd-card: #191b21;
+  --color-fd-card-foreground: #ede8df;
+  --color-fd-popover: #191b21;
+  --color-fd-popover-foreground: #ede8df;
+  --color-fd-muted: #1c1e24;
+  --color-fd-secondary: #1e2129;
+  --color-fd-secondary-foreground: #f3d49c;
+
+  /* The muted teal/grey from the brief. 7.2:1 on #141519 — passes AAA. */
+  --color-fd-muted-foreground: #8ba8a6;
+
+  /* Bright cyan carries links and active states. */
+  --color-fd-primary: #03eaff;
+  --color-fd-primary-foreground: #05131a;
+
+  /* Hover surface tinted with the deep blue rather than neutral grey. */
+  --color-fd-accent: #1b2a33;
+  --color-fd-accent-foreground: #03eaff;
+
+  --color-fd-border: #2a2d36;
+  --color-fd-ring: #0369a1;
+  --color-fd-overlay: hsla(228, 12%, 3%, 0.6);
+}
+
+/* ---------------------------------------------------------------------------
+   4. CONTRAST NOTE — two deliberate departures from the brief
+
+   (a) The brief lists #F3D49C as "light beige text/highlights". Used as the
+       body foreground it is legible (12.8:1) but the saturation is fatiguing
+       over a full module. Body text is therefore #EDE8DF — the same warm cast,
+       desaturated — and #F3D49C is reserved for headings, inline code and
+       secondary-foreground, where it reads as an accent rather than a wash.
+
+   (b) #D4A017 on the light cream canvas is roughly 2.2:1 — well under the 4.5:1
+       AA floor for body text. Gold survives in light mode as a *decorative*
+       colour (rules, badges, icons, borders). Where gold must carry text,
+       --color-brand-gold-ink (#63490C, 7.95:1) is used instead.
+
+   Change either of these in this block if you would rather have the literal
+   palette than the accessible one.
+--------------------------------------------------------------------------- */
+
+/* Headings pick up the beige in dark mode, deep navy in light mode. */
+.dark .prose :is(h1, h2, h3, h4),
+.dark #nd-page :is(h1, h2, h3, h4) {
+  color: #f3d49c;
+}
+
+/* Inline code — gold in light mode (on a tinted chip, so contrast holds),
+   beige in dark mode. */
+#nd-page :not(pre) > code {
+  color: var(--color-brand-gold-ink);
+  background-color: color-mix(in oklab, var(--color-brand-gold) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-brand-gold) 24%, transparent);
+}
+
+.dark #nd-page :not(pre) > code {
+  color: #f3d49c;
+  background-color: color-mix(in oklab, var(--color-brand-gold) 14%, transparent);
+  border-color: color-mix(in oklab, var(--color-brand-gold) 26%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   5. SIDEBAR TUNING
+
+   fumadocs-ui/css/neutral.css hard-codes greyscale sidebar overrides under
+   `.dark #nd-sidebar`. Re-state ours so the sidebar inherits the brand palette
+   instead of falling back to neutral grey.
+--------------------------------------------------------------------------- */
+
+.dark #nd-sidebar {
+  --color-fd-muted: #1c1e24;
+  --color-fd-secondary: #1e2129;
+  --color-fd-muted-foreground: #8ba8a6;
+}
+
+/* ---------------------------------------------------------------------------
+   6. "CLASSIC ELEGANT YET TECHNICAL" DETAILS
+--------------------------------------------------------------------------- */
+
+:root {
+  --shadow-elegant: 0 1px 2px hsla(212, 60%, 12%, 0.06), 0 8px 24px -12px hsla(212, 60%, 12%, 0.14);
+  --grid-line: color-mix(in oklab, var(--color-fd-border) 70%, transparent);
+}
+
+.dark {
+  --shadow-elegant: 0 1px 2px hsla(0, 0%, 0%, 0.4), 0 8px 28px -14px hsla(0, 0%, 0%, 0.7);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizeLegibility;
+}
+
+/* Faint engineering-paper grid. Used by the hero and section backdrops via
+   `.tech-grid` — deliberately low contrast so it reads as texture, not noise. */
+.tech-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Thin gold hairline used to separate major landing-page sections. */
+.rule-gold {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--color-brand-gold) 55%, transparent),
+    transparent
+  );
+  height: 1px;
+}
+
+/* Small-caps eyebrow label. */
+.eyebrow {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+}
+
+::selection {
+  background-color: color-mix(in oklab, var(--color-fd-primary) 28%, transparent);
+  color: var(--color-fd-foreground);
+}
+
+/* Focus ring — visible in both modes, keyboard users only. */
+:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 2px;
+}

@@ -1,0 +1,32 @@
+---
+title: Instalasi Perangkat Lunak
+description: Toolchain, IDE, dan driver beserta versi yang dipakai di lab.
+draft: false
+---
+
+Gunakan versi yang tercantum di sini. Versi lain mungkin berjalan, tetapi
+asisten hanya menjamin dukungan untuk versi ini.
+
+| Perangkat | Versi | Catatan |
+| --- | --- | --- |
+| Simulator logika | 2.7.x | Format berkas `.circ` |
+| Toolchain board | 1.9.x | Termasuk driver USB-serial |
+| Editor | bebas | Disarankan yang mendukung LSP |
+
+<Callout type="warn" title="Windows">
+  Pasang driver USB-serial sebelum menancapkan board. Menancapkan lebih dulu
+  membuat Windows memilih driver generik yang salah, dan melepasnya perlu
+  langkah manual di Device Manager.
+</Callout>
+
+## Verifikasi
+
+```bash
+# Toolchain terbaca?
+toolchain --version
+
+# Board terdeteksi?
+toolchain devices list
+```
+
+Jika `devices list` kosong, lanjut ke [Konfigurasi Lingkungan](/docs/setup/lingkungan).

@@ -1,0 +1,16 @@
+node_modules
+.next
+.source
+out
+.env
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Tina
+tina/__generated__/**
+!tina/__generated__/.gitkeep
+public/admin
+# NOTE: tina/tina-lock.json IS committed on purpose — the production
+# build needs it. Do not add it here.
