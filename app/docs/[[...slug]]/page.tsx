@@ -1,47 +1,19 @@
-import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import {
   DocsBody,
   DocsPage,
+  DocsTitle,
+  DocsDescription,
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents } from '@/components/mdx';
-import { DraftBadge, EditInCms } from '@/components/edit-in-cms';
-import { TinaHeader } from '@/components/tina-wrapper';
+import { auth } from '@/auth';
+import { isAllowedAdmin } from '@/lib/admin';
+import { source, draftSource } from '@/lib/source';
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
-
-const DOCS_QUERY = `
-query docs($relativePath: String!) {
-  docs(relativePath: $relativePath) {
-    ... on Document {
-      _sys {
-        filename
-        basename
-        hasReferences
-        breadcrumbs
-        path
-        relativePath
-        extension
-      }
-      id
-    }
-    title
-    description
-    draft
-    course
-    icon
-    full
-    body
-  }
-}
-`;
-
-import { auth } from '@/auth';
-import { isAllowedAdmin } from '@/lib/admin';
-import { source, draftSource } from '@/lib/source';
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
@@ -63,15 +35,6 @@ export default async function Page({ params }: PageProps) {
   }
 
   const MDX = page.data.body;
-  const relativePath = page.path;
-
-  const initialData = {
-    docs: {
-      title: page.data.title,
-      description: page.data.description,
-      draft: page.data.draft,
-    },
-  };
 
   return (
     <DocsPage
@@ -79,21 +42,8 @@ export default async function Page({ params }: PageProps) {
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
     >
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Suspense fallback={null}>
-          <EditInCms path={page.path} />
-        </Suspense>
-
-        {page.data.draft && isAdmin ? <DraftBadge /> : null}
-      </div>
-
-      <TinaHeader
-        query={DOCS_QUERY}
-        variables={{ relativePath }}
-        data={initialData}
-        fallbackTitle={page.data.title}
-        fallbackDescription={page.data.description}
-      />
+      <DocsTitle>{page.data.title}</DocsTitle>
+      {page.data.description && <DocsDescription>{page.data.description}</DocsDescription>}
 
       <DocsBody>
         <MDX components={getMDXComponents()} />

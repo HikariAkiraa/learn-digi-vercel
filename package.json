@@ -7,18 +7,15 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "cross-env TINA_PUBLIC_IS_LOCAL=true tinacms dev -c \"next dev\"",
-    "dev:cms": "cross-env TINA_PUBLIC_IS_LOCAL=false tinacms dev -c \"next dev\"",
-    "build": "cross-env TINA_PUBLIC_IS_LOCAL=false tinacms build && next build",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
-    "@tinacms/datalayer": "^2.0.29",
     "@upstash/redis": "^1.38.2",
-    "fs-extra": "^11.2.0",
     "fumadocs-core": "^16.14.0",
     "fumadocs-mdx": "^15.2.2",
     "fumadocs-ui": "^16.14.0",
@@ -28,20 +25,14 @@
     "next-auth": "^5.0.0-beta.32",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tinacms": "^3.11.0",
-    "tinacms-gitprovider-github": "^4.1.16",
-    "upstash-redis-level": "^1.1.1",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
-    "@tinacms/cli": "^2.5.6",
-    "@types/fs-extra": "^11.0.4",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "cross-env": "^10.0.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.0"
