@@ -9,7 +9,7 @@ import { isAllowedAdmin } from '@/lib/admin';
  * not pull in anything Node-only. The Google provider and lib/admin both
  * qualify. A JWT session strategy is used because there is no database.
  */
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
