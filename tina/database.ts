@@ -42,14 +42,12 @@ export default isLocal
         repo: requireEnv('GITHUB_REPO'),
         token: requireEnv('GITHUB_PERSONAL_ACCESS_TOKEN'),
       }),
-      databaseAdapter: new RedisLevel<string, Record<string, unknown>>({
+      databaseAdapter: new (RedisLevel as any)({
         redis: {
-          url: requireEnv('KV_REST_API_URL'),
-          token: requireEnv('KV_REST_API_TOKEN'),
+          url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || requireEnv('UPSTASH_REDIS_REST_URL'),
+          token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || requireEnv('UPSTASH_REDIS_REST_TOKEN'),
         },
         debug: process.env.DEBUG === 'true',
-        // Namespacing by branch keeps preview branches from clobbering
-        // production's index.
         namespace: branch,
       }),
     });

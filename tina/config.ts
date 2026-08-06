@@ -1,5 +1,5 @@
 import { defineConfig, LocalAuthProvider, type Collection } from 'tinacms';
-import { WhitelistAuthProvider } from './auth-provider';
+import { WhitelistAuthProvider } from './auth-provider.js';
 
 /**
  * TinaCMS — self-hosted configuration.
