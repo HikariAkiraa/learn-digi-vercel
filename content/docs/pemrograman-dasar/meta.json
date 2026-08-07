@@ -5,7 +5,8 @@
   "level": "Basic",
   "pages": [
     "index",
-    "..."
+    "...",
+    "module-1-introduction-to-c"
   ],
   "image": "",
   "accent": "bg-amber-400"
